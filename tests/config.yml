@@ -1,0 +1,9 @@
+rest:
+    host: localhost
+    port: 5569
+database:
+    dbname: token_db
+    user: minos
+    password: min0s
+    host: localhost
+    port: 5432
