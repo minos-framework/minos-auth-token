@@ -18,6 +18,7 @@ from .config import (
 from .handler import (
     add_token,
     validate_token,
+    refresh_token,
 )
 
 logger = logging.getLogger(__name__)
@@ -40,6 +41,7 @@ class AuthRestService(AIOHTTPService):
 
         app.router.add_route("POST", "/token", add_token)
         app.router.add_route("POST", "/token/validate", validate_token)
+        app.router.add_route("POST", "/token/refresh", refresh_token)
 
         return app
 
