@@ -46,9 +46,9 @@ async def validate_token(request: web.Request) -> web.Response:
         content = await request.json()
 
         if "token" not in content:
-            return web.HTTPBadRequest(text="Wrong data. Provide token.")
+            return web.json_response({"error": "Wrong data. Provide token."}, status=400)
     except Exception:
-        return web.HTTPBadRequest(text="Wrong data. Provide token.")
+        return web.json_response({"error": "Wrong data. Provide token."}, status=400)
 
     Session = sessionmaker(bind=request.app["db_engine"])
 
@@ -59,9 +59,9 @@ async def validate_token(request: web.Request) -> web.Response:
 
     if r is not None:
         if r.expire > datetime.now():
-            return web.json_response(text="Token valid.")
+            return web.json_response({"message": "Token valid."})
 
-    return web.json_response(status=400, text="Token invalid.")
+    return web.json_response({"error": "Token invalid."}, status=400,)
 
 
 async def refresh_token(request: web.Request) -> web.Response:
@@ -70,9 +70,9 @@ async def refresh_token(request: web.Request) -> web.Response:
         content = await request.json()
 
         if "token" not in content:
-            return web.json_response(status=400, text="Wrong data. Provide token.")
+            return web.json_response({"error": "Wrong data. Provide token."}, status=400)
     except Exception:
-        return web.json_response(status=400, text="Wrong data. Provide token.")
+        return web.json_response({"error": "Wrong data. Provide token."}, status=400)
 
     Session = sessionmaker(bind=request.app["db_engine"])
 
@@ -94,4 +94,4 @@ async def refresh_token(request: web.Request) -> web.Response:
         return web.json_response({"token": token})
     else:
         s.close()
-        return web.json_response(status=400, text="Token not found. Provide correct token.")
+        return web.json_response({"error": "Token not found. Provide correct token."}, status=400)

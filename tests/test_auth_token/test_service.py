@@ -54,28 +54,28 @@ class TestCredentialRestService(AioHTTPTestCase):
         response = await self.client.request("POST", url, data=json.dumps(content))
 
         self.assertEqual(200, response.status)
-        self.assertEqual("Token valid.", await response.text())
+        self.assertDictEqual({"message": "Token valid."}, json.loads(await response.text()))
 
     async def test_validate_token_no_data_passed(self):
         url = "/token/validate"
         response = await self.client.request("POST", url)
 
         self.assertEqual(400, response.status)
-        self.assertIn("Wrong data. Provide token.", await response.text())
+        self.assertDictEqual({"error": "Wrong data. Provide token."}, json.loads(await response.text()))
 
     async def test_validate_token_wrong_data_passed(self):
         url = "/token/validate"
         response = await self.client.request("POST", url, data=json.dumps({"abc": "test"}))
 
         self.assertEqual(400, response.status)
-        self.assertIn("Wrong data. Provide token.", await response.text())
+        self.assertDictEqual({"error": "Wrong data. Provide token."}, json.loads(await response.text()))
 
     async def test_validate_token_wrong(self):
         url = "/token/validate"
         response = await self.client.request("POST", url, data=json.dumps({"token": "test"}))
 
         self.assertEqual(400, response.status)
-        self.assertIn("Token invalid.", await response.text())
+        self.assertDictEqual({"error": "Token invalid."}, json.loads(await response.text()))
 
     async def test_refresh_token(self):
         url = "/token"
@@ -97,21 +97,21 @@ class TestCredentialRestService(AioHTTPTestCase):
         response = await self.client.request("POST", url)
 
         self.assertEqual(400, response.status)
-        self.assertIn("Wrong data. Provide token.", await response.text())
+        self.assertDictEqual({"error": "Wrong data. Provide token."}, json.loads(await response.text()))
 
     async def test_refresh_token_wrong_data_passed(self):
         url = "/token/refresh"
         response = await self.client.request("POST", url, data=json.dumps({"abc": "test"}))
 
         self.assertEqual(400, response.status)
-        self.assertIn("Wrong data. Provide token.", await response.text())
+        self.assertDictEqual({"error": "Wrong data. Provide token."}, json.loads(await response.text()))
 
     async def test_refresh_token_wrong(self):
         url = "/token/refresh"
         response = await self.client.request("POST", url, data=json.dumps({"token": "test"}))
 
         self.assertEqual(400, response.status)
-        self.assertEqual("Token not found. Provide correct token.", await response.text())
+        self.assertDictEqual({"error": "Token not found. Provide correct token."}, json.loads(await response.text()))
 
 
 if __name__ == "__main__":
