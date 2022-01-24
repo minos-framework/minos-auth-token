@@ -14,7 +14,7 @@ from .launchers import (
     EntrypointLauncher,
 )
 from .service import (
-    AuthRestService,
+    TokenRestService,
 )
 
 app = typer.Typer()
@@ -34,7 +34,7 @@ def start(
         typer.echo(f"Error loading config: {exc!r}")
         raise typer.Exit(code=1)
 
-    services = (AuthRestService(address=config.rest.host, port=config.rest.port, config=config),)
+    services = (TokenRestService(address=config.rest.host, port=config.rest.port, config=config),)
     try:
         EntrypointLauncher(config=config, services=services).launch()
     except Exception as exc:

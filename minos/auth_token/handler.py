@@ -1,8 +1,5 @@
 import logging
-from typing import (
-    Any,
-    Optional,
-)
+import secrets
 from datetime import (
     datetime,
     timedelta,
@@ -10,27 +7,16 @@ from datetime import (
 from uuid import (
     uuid4,
 )
-import secrets
+
 from aiohttp import (
-    ClientConnectorError,
-    ClientResponse,
-    ClientSession,
     web,
-)
-from yarl import (
-    URL,
 )
 from sqlalchemy.orm import (
     sessionmaker,
 )
+
 from .database.models import (
     Token,
-)
-from sqlalchemy import (
-    exc,
-)
-from .exceptions import (
-    NoTokenException,
 )
 
 logger = logging.getLogger(__name__)
@@ -46,26 +32,15 @@ async def add_token(request: web.Request) -> web.Response:
     now = datetime.now()
     uuid = uuid4()
     token = secrets.token_hex(20)
-    credential = Token(
-        uuid=uuid,
-        token=token,
-        expire=now + timedelta(days=1),
-        created_at=now,
-        updated_at=now,
-    )
-
-    try:
-        s.add(credential)
-        s.commit()
-    except exc.IntegrityError:
-        return web.json_response(status=500, text="Error: Token is already taken.")
-
+    token_o = Token(uuid=uuid, token=token, expire=now + timedelta(days=1), created_at=now, updated_at=now,)
+    s.add(token_o)
+    s.commit()
     s.close()
     return web.json_response({"uuid": str(uuid), "token": token})
 
 
 async def validate_token(request: web.Request) -> web.Response:
-    """ Handle Credentials endpoints """
+    """ Handle Token Validation """
 
     try:
         content = await request.json()
@@ -84,14 +59,13 @@ async def validate_token(request: web.Request) -> web.Response:
 
     if r is not None:
         if r.expire > datetime.now():
-            return web.json_response(text="Token valid")
-        else:
-            return web.json_response(status=400, text="Token expired.")
-    else:
-        return web.json_response(status=400, text="Token invalid")
+            return web.json_response(text="Token valid.")
+
+    return web.json_response(status=400, text="Token invalid.")
 
 
 async def refresh_token(request: web.Request) -> web.Response:
+    """ Refresh Token endpoints """
     try:
         content = await request.json()
 
@@ -106,13 +80,12 @@ async def refresh_token(request: web.Request) -> web.Response:
 
     r = s.query(Token).filter(Token.token == content["token"]).first()
 
-
     if r is not None:
         token = secrets.token_hex(20)
         now = datetime.now()
 
         r.token = token
-        r.expire=now + timedelta(days=1)
+        r.expire = now + timedelta(days=1)
         r.updated_at = now
 
         s.commit()
@@ -122,5 +95,3 @@ async def refresh_token(request: web.Request) -> web.Response:
     else:
         s.close()
         return web.json_response(status=400, text="Token not found. Provide correct token.")
-
-

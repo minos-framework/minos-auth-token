@@ -48,7 +48,7 @@ class TestCli(unittest.TestCase):
 
     def test_launch(self):
         entrypoint = FakeEntrypoint()
-        with patch("minos.auth_credential.launchers.EntrypointLauncher.entrypoint", new_callable=PropertyMock) as mock:
+        with patch("minos.auth_token.launchers.EntrypointLauncher.entrypoint", new_callable=PropertyMock) as mock:
             mock.return_value = entrypoint
             self.launcher.launch()
         self.assertEqual(1, entrypoint.call_count)

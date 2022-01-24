@@ -9,22 +9,23 @@ from aiomisc.service.aiohttp import (
 from sqlalchemy import (
     create_engine,
 )
-from .database.models import (
-    Base,
-)
+
 from .config import (
     TokenConfig,
 )
+from .database.models import (
+    Base,
+)
 from .handler import (
     add_token,
-    validate_token,
     refresh_token,
+    validate_token,
 )
 
 logger = logging.getLogger(__name__)
 
 
-class AuthRestService(AIOHTTPService):
+class TokenRestService(AIOHTTPService):
     def __init__(self, address: str, port: int, config: TokenConfig):
         self.config = config
         self.engine = None
@@ -55,4 +56,3 @@ class AuthRestService(AIOHTTPService):
 
     async def create_database(self):
         Base.metadata.create_all(self.engine)
-

@@ -23,23 +23,23 @@ REST = collections.namedtuple("Rest", "host port")
 DATABASE = collections.namedtuple("Database", "dbname user password host port")
 
 _ENVIRONMENT_MAPPER = {
-    "rest.host": "AUTH_CREDENTIAL_REST_HOST",
-    "rest.port": "AUTH_CREDENTIAL_REST_PORT",
-    "database.dbname": "AUTH_CREDENTIAL_DATABASE_NAME",
-    "database.user": "AUTH_CREDENTIAL_DATABASE_USER",
-    "database.password": "AUTH_CREDENTIAL_DATABASE_PASSWORD",
-    "database.host": "AUTH_CREDENTIAL_DATABASE_HOST",
-    "database.port": "AUTH_CREDENTIAL_DATABASE_PORT",
+    "rest.host": "AUTH_TOKEN_REST_HOST",
+    "rest.port": "AUTH_TOKEN_REST_PORT",
+    "database.dbname": "AUTH_TOKEN_DATABASE_NAME",
+    "database.user": "AUTH_TOKEN_DATABASE_USER",
+    "database.password": "AUTH_TOKEN_DATABASE_PASSWORD",
+    "database.host": "AUTH_TOKEN_DATABASE_HOST",
+    "database.port": "AUTH_TOKEN_DATABASE_PORT",
 }
 
 _PARAMETERIZED_MAPPER = {
-    "rest.host": "auth_credential_rest_host",
-    "rest.port": "auth_credential_rest_port",
-    "database.database": "auth_credential_database_name",
-    "database.user": "auth_credential_database_user",
-    "database.password": "auth_credential_database_password",
-    "database.host": "auth_credential_database_host",
-    "database.port": "auth_credential_database_port",
+    "rest.host": "auth_token_rest_host",
+    "rest.port": "auth_token_rest_port",
+    "database.database": "auth_token_database_name",
+    "database.user": "auth_token_database_user",
+    "database.password": "auth_token_database_password",
+    "database.host": "auth_token_database_host",
+    "database.port": "auth_token_database_port",
 }
 
 
@@ -76,7 +76,7 @@ class TokenConfig(abc.ABC):
 
         if self._with_environment and key in _ENVIRONMENT_MAPPER and _ENVIRONMENT_MAPPER[key] in os.environ:
             if os.environ[_ENVIRONMENT_MAPPER[key]] in ["true", "True", "false", "False"]:
-                return bool(util.strtobool(os.environ[_ENVIRONMENT_MAPPER[key]]))
+                return bool(util.strtobool(os.environ[_ENVIRONMENT_MAPPER[key]]))  # pragma: no cover
             return os.environ[_ENVIRONMENT_MAPPER[key]]
 
         def _fn(k: str, data: dict[str, t.Any]) -> t.Any:
@@ -104,6 +104,10 @@ class TokenConfig(abc.ABC):
 
         :return: A ``REST`` NamedTuple instance.
         """
-        return DATABASE(dbname=self._get("database.dbname"), user=self._get("database.user"),
-                        password=self._get("database.password"), host=self._get("database.host"),
-                        port=int(self._get("database.port")))
+        return DATABASE(
+            dbname=self._get("database.dbname"),
+            user=self._get("database.user"),
+            password=self._get("database.password"),
+            host=self._get("database.host"),
+            port=int(self._get("database.port")),
+        )

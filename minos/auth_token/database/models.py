@@ -24,6 +24,6 @@ class Token(Base):
     updated_at = Column(TIMESTAMP)
 
     def __repr__(self):
-        return "<Token(uuid='{}', token='{}', expire={}, created_at={}, updated_at={})>".format(
+        return "Token(uuid='{}', token='{}', expire={}, created_at={}, updated_at={})".format(  # pragma: no cover
             self.uuid, self.token, self.expire, self.created_at, self.updated_at
         )
