@@ -43,10 +43,7 @@ async def validate_token(request: web.Request) -> web.Response:
     """ Handle Token Validation """
 
     try:
-        content = await request.json()
-
-        if "token" not in content:
-            return web.json_response({"error": "Wrong data. Provide token."}, status=400)
+        token = await _get_authorization_token(request)
     except Exception:
         return web.json_response({"error": "Wrong data. Provide token."}, status=400)
 
@@ -54,7 +51,7 @@ async def validate_token(request: web.Request) -> web.Response:
 
     s = Session()
 
-    r = s.query(Token).filter(Token.token == content["token"]).first()
+    r = s.query(Token).filter(Token.token == token).first()
     s.close()
 
     if r is not None:
@@ -95,3 +92,14 @@ async def refresh_token(request: web.Request) -> web.Response:
     else:
         s.close()
         return web.json_response({"error": "Token not found. Provide correct token."}, status=400)
+
+
+async def _get_authorization_token(request: web.Request):
+    try:
+        headers = request.headers
+        if "Authorization" in headers and "Bearer" in headers["Authorization"]:
+            return headers["Authorization"].split()[1]
+        else:
+            raise Exception
+    except Exception as e:
+        raise e

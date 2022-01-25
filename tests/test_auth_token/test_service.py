@@ -51,7 +51,7 @@ class TestCredentialRestService(AioHTTPTestCase):
         content = await response.json()
         url = "/token/validate"
 
-        response = await self.client.request("POST", url, data=json.dumps(content))
+        response = await self.client.request("POST", url, headers={"Authorization": f"Bearer {content['token']}"})
 
         self.assertEqual(200, response.status)
         self.assertDictEqual({"message": "Token valid."}, json.loads(await response.text()))
@@ -72,7 +72,7 @@ class TestCredentialRestService(AioHTTPTestCase):
 
     async def test_validate_token_wrong(self):
         url = "/token/validate"
-        response = await self.client.request("POST", url, data=json.dumps({"token": "test"}))
+        response = await self.client.request("POST", url, headers={"Authorization": "Bearer test-token"})
 
         self.assertEqual(400, response.status)
         self.assertDictEqual({"error": "Token invalid."}, json.loads(await response.text()))
