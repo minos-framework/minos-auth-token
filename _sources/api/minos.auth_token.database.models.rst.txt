@@ -1,0 +1,7 @@
+minos.auth\_token.database.models module
+========================================
+
+.. automodule:: minos.auth_token.database.models
+   :members:
+   :undoc-members:
+   :show-inheritance:

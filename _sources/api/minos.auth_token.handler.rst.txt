@@ -1,0 +1,7 @@
+minos.auth\_token.handler module
+================================
+
+.. automodule:: minos.auth_token.handler
+   :members:
+   :undoc-members:
+   :show-inheritance:

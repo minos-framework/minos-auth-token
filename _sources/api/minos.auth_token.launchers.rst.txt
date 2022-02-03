@@ -1,0 +1,7 @@
+minos.auth\_token.launchers module
+==================================
+
+.. automodule:: minos.auth_token.launchers
+   :members:
+   :undoc-members:
+   :show-inheritance:

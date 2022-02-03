@@ -1,0 +1,7 @@
+minos.auth\_token.cli module
+============================
+
+.. automodule:: minos.auth_token.cli
+   :members:
+   :undoc-members:
+   :show-inheritance:
